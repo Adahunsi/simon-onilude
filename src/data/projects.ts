@@ -17,4 +17,20 @@ export const projects: Project[] = [
     link: 'https://py-healthcare.com',
     technologies: ['Nuxt.js', 'PHP'],
   },
+  {
+    title: 'Insight Analytics Dashboard',
+    description:
+      'A sample SaaS dashboard concept for tracking revenue, product activity, and customer growth.',
+    image: '/projects/insight-preview.jpg',
+    technologies: ['Vue 3', 'TypeScript', 'Tailwind CSS', 'Chart.js'],
+    placeholder: true,
+  },
+  {
+    title: 'Wanderbase Travel App',
+    description:
+      'A sample travel discovery concept with destination collections and a simple itinerary planner.',
+    image: '/projects/wanderbase-preview.jpg',
+    technologies: ['Vue 3', 'Mapbox', 'Tailwind CSS', 'Vite'],
+    placeholder: true,
+  },
 ]

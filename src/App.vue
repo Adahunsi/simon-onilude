@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import Home from '@/views/Home.vue'
+import HomeView from '@/views/HomeView.vue'
 </script>
 
 <template>
-  <div class="min-h-screen">
-  <Home />
-  </div>
+  <HomeView />
 </template>

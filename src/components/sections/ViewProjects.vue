@@ -1,71 +1,35 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { ArrowUpRight, Code2 } from '@lucide/vue'
 import { projects } from '@/data/projects'
-
-
-
 </script>
+
 <template>
-
-    <section class="py-24 lg:py-32 relative">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14 animate-fade-up">
-                <div>
-                    <div
-                        class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">
-                        <span class="h-px w-8 bg-primary"></span>Selected work
-                    </div>
-                    <h2 class="text-4xl sm:text-5xl font-bold">
-                        Projects I'm proud of.
-                    </h2>
-                </div>
-                <p class="max-w-md text-muted-foreground">A glimpse of recent work — hover any card to bring it to life.
-                </p>
+  <section id="projects" aria-labelledby="projects-title" class="section-spacing">
+    <div class="section-container">
+      <div class="mb-12 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div><p class="eyebrow">Selected work</p><h2 id="projects-title" class="section-title">Projects I'm proud of.</h2></div>
+        <p class="max-w-sm text-muted-foreground">A selection of real work, with two sample concepts to make room for what's next.</p>
+      </div>
+      <div class="grid gap-6 md:grid-cols-2 lg:gap-8">
+        <article v-for="project in projects" :key="project.title" class="group flex flex-col overflow-hidden rounded-3xl border border-border bg-card transition-colors hover:border-primary/50">
+          <div class="relative aspect-[16/10] overflow-hidden border-b border-border bg-secondary">
+            <img :src="project.image" :alt="project.title + (project.placeholder ? ' concept preview' : ' website screenshot')" width="960" height="600" loading="lazy" decoding="async" class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]" />
+            <span v-if="project.placeholder" class="absolute left-4 top-4 rounded-full border border-border bg-background/95 px-3 py-1.5 text-xs font-semibold">Sample project</span>
+          </div>
+          <div class="flex flex-1 flex-col gap-4 p-6 sm:p-7">
+            <h3 class="text-xl font-bold">{{ project.title }}</h3>
+            <p class="text-sm leading-relaxed text-muted-foreground">{{ project.description }}</p>
+            <ul class="flex flex-wrap gap-2" aria-label="Technologies used">
+              <li v-for="tech in project.technologies" :key="tech" class="rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs text-muted-foreground">{{ tech }}</li>
+            </ul>
+            <div class="mt-auto flex flex-wrap items-center gap-5 pt-3 text-sm">
+              <a v-if="project.link || project.demo" :href="project.link || project.demo" target="_blank" rel="noopener noreferrer" :aria-label="'Visit ' + project.title + ' (opens in a new tab)'" class="inline-flex min-h-10 items-center gap-2 font-semibold text-primary hover:underline">Visit project <ArrowUpRight class="h-4 w-4" aria-hidden="true" /></a>
+              <a v-if="project.githubUrl || project.repo" :href="project.githubUrl || project.repo" target="_blank" rel="noopener noreferrer" :aria-label="'View code for ' + project.title + ' (opens in a new tab)'" class="inline-flex min-h-10 items-center gap-2 text-muted-foreground hover:text-foreground"><Code2 class="h-4 w-4" aria-hidden="true" /> Code</a>
+              <p v-if="project.placeholder" class="text-xs text-muted-foreground">Concept preview · Real project coming soon</p>
             </div>
-
-            <div class="grid md:grid-cols-2 gap-6 lg:gap-8">
-                <article v-for="project in projects" :key="project.title"
-                    class="group relative overflow-hidden rounded-3xl border border-border bg-card transition-all duration-500 hover:border-primary/50 hover:shadow-ember animate-fade-up">
-                    <div class="relative aspect-[16/10] overflow-hidden">
-                        <img :src="project.image"
-                            class="h-full w-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105"
-                            alt="Insight Analytics Dashboard" />
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500">
-                        </div>
-                        <a :href="project.link" aria-label="Visit ${project.title}"
-                            class="absolute top-4 right-4 grid h-11 w-11 place-items-center rounded-full bg-gradient-ember text-primary-foreground shadow-ember translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"></a>
-                    </div>
-
-                    <div class="p-6 space-y-4">
-                        <div class="flex items-center justify-between gap-4">
-                            <h3 class="text-xl font-bold"> {{ project.title }} </h3>
-                        </div>
-                        <p
-                            class="text-sm text-muted-foreground max-h-0 opacity-0 overflow-hidden transition-all duration-500 group-hover:max-h-32 group-hover:opacity-100">
-                            {{ project.description }} </p>
-                        <div class="flex flex-wrap gap-2">
-                            <span v-for="tech in project.technologies" :key="tech"
-                                class="rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs text-muted-foreground">
-                                {{ tech }}</span>
-
-                        </div>
-
-                        <div class="flex items-center gap-4 pt-2 text-sm">
-                            <a :href="project.link"
-                                class="inline-flex items-center gap-1.5 font-semibold text-primary hover:gap-2 transition-all">Visit
-                                Project</a>
-                            <a href="#"
-                                class="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors">Git
-                                code</a>
-                        </div>
-
-                    </div>
-                </article>
-
-            </div>
-        </div>
-    </section>
-
-
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
 </template>

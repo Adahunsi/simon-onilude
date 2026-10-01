@@ -1,0 +1,68 @@
+Let me walk through the full chain end to end — six files, one feature, in the order a request actually flows through them.
+
+1. The type augmentation — src/types/tanstack-table.d.ts
+Read c:\Users\adahu\Documents\GitHub\finance-management-system\src\types\tanstack-table.d.ts
+TanStack's ColumnDef has a built-in meta bag for arbitrary per-column data, but it's typed as {} by default — this file "reopens" that interface (TypeScript's module augmentation) and adds one field, exportLabel. Nothing runtime happens here; it's purely so that meta: { exportLabel: 'Principal' } type-checks wherever a ColumnDef is declared, project-wide.
+
+2. The export contract — src/types/investment/deposit-subscription.ts:201-214
+
+export type DepositSubscriptionExportFormat = 'pdf' | 'excel'
+
+export interface DepositSubscriptionExportParams extends DepositSubscriptionFilters {
+  format: DepositSubscriptionExportFormat
+  columns: string[]
+}
+DepositSubscriptionExportParams is just DepositSubscriptionFilters (the same filters the list screen already uses — status, currency_code, date_from, date_to, etc.) plus two extra fields. columns is deliberately a loose string[], not a hand-written union — the earlier design (a duplicated union type) was rejected specifically to avoid a second list that could drift from the real column definitions.
+
+3. The DataTable.vue change — the only "shared component" edit
+Read c:\Users\adahu\Documents\GitHub\finance-management-system\src\components\DataTable.vue (lines 41-85)
+DataTable.vue is used by ~40 different tables across the app and is deliberately generic — no domain logic. Before this change, its "Columns" visibility toggle (the dropdown at line ~98, unrelated code, unchanged) was fully internal: a local ref that never left the component. The only change here is one line — emit('columnVisibilityChange', columnVisibility.value) added inside the existing onColumnVisibilityChange callback — so that whenever a user checks/unchecks a column in any table using DataTable, that table now broadcasts its current visibility state outward. Every other of the ~40 call sites is unaffected, since nothing forces them to listen to the new event.
+
+4. The service call — deposit-subscription.service.ts:58-69
+Read c:\Users\adahu\Documents\GitHub\finance-management-system\src\services\investment\deposit-subscription.service.ts (lines 56-73)
+A plain axios GET, responseType: 'blob' (so axios returns raw file bytes, not JSON). The one deliberate translation happens here: everywhere above this function, columns is a natural string[]; only at this HTTP boundary does it get .join(',')'d into the comma string the backend actually expects. That was the bug we found and fixed earlier — axios's default array serialization (columns[]=a&columns[]=b) silently didn't match what the backend parses.
+
+5. The composable — useDepositSubscription.ts:124-159
+Read c:\Users\adahu\Documents\GitHub\finance-management-system\src\composables\investment\useDepositSubscription.ts (lines 125-160)
+This handleExport lives inside useDepositSubscription(schema, filters) — the same composable instance that runs the paginated list query. That's why the date filter "just worked" without any composable changes: filters here is the exact same reactive object the on-screen table reads from, so whatever the user has typed into the filter panel is what gets exported too.
+
+Two things worth noting:
+
+active — prunes out any undefined/empty-string filter (lines 138-140) so an unset filter isn't sent as status=&date_from=. This mirrors the identical pruning the list query does a few lines above it (lines 93-96) — same logic, same file, not duplicated by coincidence.
+The blob-to-download dance (146-153) — createObjectURL turns the raw file bytes into a temporary browser URL, a throwaway invisible <a download> is clicked programmatically to trigger the browser's save dialog, then both the link and the URL are cleaned up. This isn't new — it's the same pattern useMasterChart.handleExport and the GL transactions download already used; I copied the convention rather than inventing one.
+6. The view — where columns get "opted in" and the whole thing gets triggered
+Read c:\Users\adahu\Documents\GitHub\finance-management-system\src\components\ModuleInvestment\deposit-subscriptions\ViewDepositSubscriptions.vue (lines 425-438)
+This is the pattern repeated on all 10 real data columns (contract_number, customer_name, product_code, initial_deposit_amount, current_balance, interest_rate, effective_date, maturity_date, currency_code, status). The actions column — the dropdown menu of row actions — never gets this meta tag, which is what excludes it from export "by construction": there's no exclusion list to remember, it's just never opted in.
+
+Read c:\Users\adahu\Documents\GitHub\finance-management-system\src\components\ModuleInvestment\deposit-subscriptions\ViewDepositSubscriptions.vue (lines 537-563)
+Three moving parts here, in order:
+
+exportableColumns — filters the same columns array that builds the table down to only entries carrying meta.exportLabel, extracting {key, label} pairs. This runs once (it's a plain const, not reactive — the column definitions never change at runtime, only which ones are visible does).
+columnVisibility + onColumnVisibilityChange — the listener side of the DataTable.vue emit from step 3. Whenever the user toggles a column in the table's "Columns" dropdown, this local ref gets the latest state. The !== false check (not === true) matters: TanStack only records explicit overrides, so a column nobody has touched is absent from the object entirely but is still visible.
+visibleExportColumns — a computed intersection of the two: "of the columns that are allowed to be exported, which are currently shown." This recomputes automatically whenever the user toggles a column, since it's a computed.
+onExport(format) is what the two buttons call directly — no modal, per your earlier call for the simpler two-button design. It hands the current format plus that live intersection straight to handleExport, and toasts the result.
+
+Read c:\Users\adahu\Documents\GitHub\finance-management-system\src\components\ModuleInvestment\deposit-subscriptions\ViewDepositSubscriptions.vue (lines 584-601)
+And the last wire, connecting DataTable's emit back to this view's listener:
+
+Read c:\Users\adahu\Documents\GitHub\finance-management-system\src\components\ModuleInvestment\deposit-subscriptions\ViewDepositSubscriptions.vue (lines 749-763)
+Read c:\Users\adahu\Documents\GitHub\finance-management-system\src\components\ModuleInvestment\deposit-subscriptions\ViewDepositSubscriptions.vue (lines 764-781)
+@column-visibility-change="onColumnVisibilityChange" — the kebab-case listener Vue automatically maps to the camelCase columnVisibilityChange emit declared in DataTable.vue.
+
+The full round trip
+
+User toggles "Status" off in the table's Columns dropdown
+  → DataTable.vue's onColumnVisibilityChange fires (TanStack internal)
+    → emits columnVisibilityChange with the new state
+  → View's onColumnVisibilityChange listener updates local columnVisibility ref
+    → visibleExportColumns computed re-evaluates, drops 'status'
+
+User clicks "Export PDF"
+  → onExport('pdf') → handleExport('pdf', visibleExportColumns.value)
+    → composable prunes filters.value, spreads {...active, format, columns}
+      → exportDepositSubscriptions(schema, params)
+        → columns.join(',') at the HTTP boundary → GET request fires
+      ← Blob comes back
+    ← createObjectURL → invisible <a download> → browser save dialog
+  ← toast success/error
+Everything downstream of "which columns/filters are active" reuses state the view already had for the table itself — the export feature added no new source of truth, just tapped into the existing ones (filters for the query params, a newly-surfaced columnVisibility for the columns).
