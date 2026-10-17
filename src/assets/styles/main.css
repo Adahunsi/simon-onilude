@@ -53,11 +53,12 @@ body,
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
+    scroll-padding-top: 6rem;
   }
 
   body {
     @apply w-full min-h-dvh bg-background text-foreground font-sans antialiased;
+    overflow-wrap: anywhere;
   }
 
   h1 {
@@ -82,6 +83,10 @@ body,
 }
 
 @layer utilities {
+  .reveal-pending {
+    opacity: 0;
+  }
+
   .text-gradient-ember {
     background-image: linear-gradient(135deg, oklch(var(--ember)) 0%, oklch(var(--ember-glow)) 50%, oklch(var(--ember-deep)) 100%);
     -webkit-background-clip: text;
@@ -113,14 +118,15 @@ body,
   .section-title { @apply font-display text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl; }
   .eyebrow { @apply mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary; }
   .eyebrow::before { content: ''; @apply h-px w-8 bg-primary; }
-  .button-primary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-gradient-ember px-5 py-3 text-sm font-semibold text-primary-foreground shadow-ember transition-transform hover:-translate-y-0.5; }
+  .button-primary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-gradient-ember px-5 py-3 text-sm font-semibold text-primary-foreground shadow-ember transition-transform motion-safe:hover:-translate-y-0.5; }
   .button-secondary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-card/60 px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-secondary; }
   .form-label { @apply mb-2 block text-sm font-medium; }
-  .form-input { @apply w-full rounded-xl border border-border bg-background/60 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary; }
+  .form-input { @apply min-w-0 w-full rounded-xl border border-border bg-background/60 px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:border-primary; }
   .skip-link { @apply fixed left-4 top-4 z-[100] -translate-y-24 rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground focus:translate-y-0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .reveal-pending { opacity: 1; }
   html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

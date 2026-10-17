@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useTemplateRef } from 'vue'
+import { useScrollReveal } from '@/composables/useScrollReveal'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import ViewHero from '@/components/sections/ViewHero.vue'
@@ -8,12 +10,14 @@ import ViewCertifications from '@/components/sections/ViewCertifications.vue'
 import ViewTools from '@/components/sections/ViewTools.vue'
 import ViewWhyMe from '@/components/sections/ViewWhyMe.vue'
 import ViewContact from '@/components/sections/ViewContact.vue'
+
+useScrollReveal(useTemplateRef<HTMLElement>('mainContent'))
 </script>
 
 <template>
   <a href="#main-content" class="skip-link">Skip to content</a>
   <AppHeader />
-  <main id="main-content" tabindex="-1">
+  <main id="main-content" ref="mainContent" tabindex="-1">
     <ViewHero />
     <ViewAboutMe />
     <ViewProjects />

@@ -18,13 +18,13 @@ import { profile } from '@/data/profile'
           </span>
           {{ profile.availability }}
         </div>
-        <h1 id="hero-title" class="font-display text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl lg:text-7xl">
+        <h1 id="hero-title" class="font-display text-[clamp(2.25rem,11vw,3rem)] font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl xl:text-7xl">
           Hi, I'm <span class="text-gradient-ember">{{ profile.name }}</span>
           <span class="mt-2 block text-foreground/90">{{ profile.role }}.</span>
         </h1>
         <p class="max-w-xl text-lg leading-relaxed text-muted-foreground">{{ profile.introduction }}</p>
         <div class="flex flex-wrap gap-3">
-          <a href="#projects" class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-gradient-ember px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-ember transition-transform duration-300 hover:scale-[1.03]">
+          <a href="#projects" class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-gradient-ember px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-ember transition-transform duration-300 motion-safe:hover:scale-[1.03]">
             View Projects <ArrowUpRight class="h-4 w-4" aria-hidden="true" />
           </a>
           <a v-if="profile.cvUrl" :href="profile.cvUrl" download class="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-card/60 px-6 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary">
@@ -34,7 +34,7 @@ import { profile } from '@/data/profile'
             <ArrowDown class="h-4 w-4" aria-hidden="true" /> Let's connect
           </a>
         </div>
-        <dl class="flex items-center gap-6 pt-4 text-sm text-muted-foreground">
+        <dl class="flex flex-wrap items-center gap-6 pt-4 text-sm text-muted-foreground">
           <div class="flex flex-col">
             <dt class="order-2">Years of experience</dt>
             <dd class="font-display text-2xl font-bold text-foreground">{{ profile.experience }}</dd>
@@ -56,7 +56,7 @@ import { profile } from '@/data/profile'
           <div class="relative h-full w-full overflow-hidden rounded-[2rem] border border-border shadow-ember">
             <img src="/simon-portrait.jpg" width="896" height="1088" :alt="profile.name" fetchpriority="high" class="h-full w-full object-cover" />
             <div class="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" aria-hidden="true"></div>
-            <div class="glass absolute bottom-5 left-5 right-5 flex items-center gap-3 rounded-2xl p-4">
+            <div class="glass absolute bottom-5 left-5 right-5 flex flex-wrap items-center gap-3 rounded-2xl p-4">
               <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-ember font-bold text-primary-foreground">SO</span>
               <div class="text-sm"><p class="font-semibold">{{ profile.name }}</p><p class="text-muted-foreground">Frontend Engineer</p></div>
             </div>
