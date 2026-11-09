@@ -13,17 +13,17 @@ export const projects: Project[] = [
     title: 'Pyhealth Care',
     description:
       'Pyhealth care is a virtual healthcare platform that connects patients with licensed healthcare professionals for remote consultations and medical advice.',
-    image: '/pyhealth-img.png',
+    image: '/projects/pyhealth-img.png',
     link: 'https://py-healthcare.com',
     technologies: ['Nuxt.js', 'PHP'],
   },
   {
-    title: 'Insight Analytics Dashboard',
+    title: 'Explorers Archive',
     description:
-      'A sample SaaS dashboard concept for tracking revenue, product activity, and customer growth.',
-    image: '/projects/insight-preview.jpg',
-    technologies: ['Vue 3', 'TypeScript', 'Tailwind CSS', 'Chart.js'],
-    placeholder: true,
+      'A digital archive documenting Nigeria’s landscapes, histories, and cultures through photography, film, stories, and curated journeys.',
+    image: '/projects/explorers-archive.png',
+    link: 'https://explorers-archive.vercel.app/',
+    technologies: ['Vue 3', 'TypeScript', 'Tailwind CSS'],
   },
   {
     title: 'Wanderbase Travel App',

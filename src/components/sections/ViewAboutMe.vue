@@ -15,8 +15,8 @@ const orbitPaused = ref(false)
           <div class="orbit-track rounded-full border border-dashed border-border/70" aria-hidden="true"></div>
           <div class="orbit-track orbit-track-inner rounded-full border border-dashed border-border/70" aria-hidden="true"></div>
           <div class="absolute inset-0 grid place-items-center">
-            <div class="orbit-portrait aspect-square overflow-hidden rounded-full border-4 border-primary/30 shadow-ember">
-              <img src="/simon-portrait.jpg" :alt="profile.name" width="896" height="1088" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+            <div class="orbit-portrait grid aspect-square place-items-center rounded-full border-4 border-primary/30 bg-gradient-ember shadow-ember">
+              <span class="font-display text-[clamp(1.5rem,5vw,3.5rem)] font-bold tracking-tight text-primary-foreground" aria-hidden="true">SO</span>
             </div>
           </div>
           <div v-for="(tech, index) in orbitTech" :key="tech.name" class="orbit-track pointer-events-none"
@@ -29,7 +29,7 @@ const orbitPaused = ref(false)
               </div>
             </div>
           </div>
-          <figcaption class="sr-only">{{ profile.name }} with technologies: {{ orbitTech.map(tech => tech.name).join(', ') }}.</figcaption>
+          <figcaption class="sr-only">{{ profile.name }}'s technology stack: {{ orbitTech.map(tech => tech.name).join(', ') }}.</figcaption>
         </figure>
         <div class="flex justify-center motion-reduce:invisible">
           <button type="button" class="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-xs text-muted-foreground transition-colors hover:text-foreground"

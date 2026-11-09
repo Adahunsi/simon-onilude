@@ -51,16 +51,16 @@ import { profile } from '@/data/profile'
       </div>
 
       <div class="relative min-w-0 lg:col-span-5">
-        <div class="relative mx-auto aspect-[4/5] w-full max-w-md">
+        <div class="relative mx-auto aspect-square w-full max-w-md">
           <div class="absolute inset-0 rounded-[2rem] bg-gradient-ember opacity-40 blur-2xl" aria-hidden="true"></div>
-          <div class="relative h-full w-full overflow-hidden rounded-[2rem] border border-border shadow-ember">
-            <img src="/simon-portrait.jpg" width="896" height="1088" :alt="profile.name" fetchpriority="high" class="h-full w-full object-cover" />
-            <div class="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" aria-hidden="true"></div>
-            <div class="glass absolute bottom-5 left-5 right-5 flex flex-wrap items-center gap-3 rounded-2xl p-4">
-              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-ember font-bold text-primary-foreground">SO</span>
-              <div class="text-sm"><p class="font-semibold">{{ profile.name }}</p><p class="text-muted-foreground">Frontend Engineer</p></div>
-            </div>
-          </div>
+          <figure class="relative h-full w-full overflow-hidden rounded-[2rem] border border-border shadow-ember">
+            <img src="/creative-workspace.png" width="1254" height="1254" alt="Desk setup with monitors, a microphone, and framed desert artwork" fetchpriority="high" class="h-full w-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/10 to-transparent" aria-hidden="true"></div>
+            <figcaption class="glass absolute bottom-5 left-5 right-5 flex items-center gap-3 rounded-2xl p-4">
+              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-ember font-display font-bold text-primary-foreground" aria-hidden="true">SO</span>
+              <span class="min-w-0 text-sm"><span class="block font-semibold text-foreground">From idea to interface</span><span class="block text-muted-foreground">Designing and building for the web</span></span>
+            </figcaption>
+          </figure>
           <div class="glass absolute -left-6 -top-6 hidden animate-float rounded-2xl px-4 py-3 shadow-card sm:block">
             <p class="text-xs text-muted-foreground">Current stack</p><p class="text-sm font-semibold">Vue 3 · Nuxt · TS</p>
           </div>
